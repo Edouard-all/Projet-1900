@@ -9,25 +9,25 @@ int main() {
 	DDRA |= (1 << PA0) | (1 << PA1);
 	DDRD &= ~(1 << PD2);
 	PORTD |= (1 << PD2);
-	//int compteur_ambre = 0;
 	int etat = 0;
 	while (true) {
 		if (!(PIND & 1 << PD2)){
-			_delay_ms(20);
+			_delay_ms(50);
 			if (!(PIND & 1 << PD2)){
 				switch (etat)
 				{
-				case 0:
+				case 0: //rouge
 					PORTA |= (1 << PA0);
 					PORTA &= ~(1 << PA1);
-					etat++; //rouge
+					etat++;
 					break;
-				case 1:
+				case 1: //vert
 					PORTA |= (1 << PA1);
 					PORTA &= ~(1 << PA0);
-					etat++; //vert
+					etat++;
 					break;
-				default:
+				default: //ambre
+					_delay_ms(50);
 					while (PIND & 1 << PD2) {
 					PORTA |= (1 << PA0);
 					PORTA &= ~(1 << PA1);
@@ -36,31 +36,12 @@ int main() {
 					PORTA |= (1 << PA1);
 					_delay_ms(1);
 					}
-					//ambre(compteur_ambre);
 					etat = 0;
 					break;
 				}
 			}
 
 		}
-		//PORTA |= (1 << PA0);
-		//PORTA &= ~(1 << PA1); //rouge
-		//_delay_ms(ms);
-		//PORTA |= (1 << PA1);
-		//PORTA &= ~(1 << PA0); //vert
-		//_delay_ms(ms);
-		//ambre(compteur_ambre);
 	}
 
 }
-//void ambre(int compteur) {
-//	while (compteur < ms) {
-//		PORTA |= (1 << PA0);
-//		PORTA &= ~(1 << PA1);
-//		_delay_ms(1);
-//		PORTA &= ~(1 << PA0);
-//		PORTA |= (1 << PA1);
-//		_delay_ms(1);
-//		compteur++;
-//	}
-//}
