@@ -66,12 +66,20 @@ const double delay = 200;
 void _delay_ms(double ms);
 bool bouton_presse();
 enum Etat (INIT,PREMIER_APPUI,PREMIER_RELACHE,SECOND_APPUI,SECOND_RELACHE,DERNIER_APPUI,DERNIER_RELACHE);
-Etat etat;
+Etat etat = INIT;
 int main(){
     DDRA |= (1 << PA0) | (1 << PA1);
     DDRD &= ~(1 << PD2);
     while(true){
-        switch(etat)
+        switch (etat)
+        {
+        case INIT:
+            
+            break;
+        
+        default:
+            break;
+        }
     }
 }
 bool bouton_presse(){
