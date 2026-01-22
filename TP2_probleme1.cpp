@@ -58,8 +58,6 @@
 | DERNIER_RELACHE | 1   | INIT            | 0   | 1   |
 +-----------------+-----+-----------------+-----+-----+
 */
-//boutton: entre DPD2
-//led: sortie PD1 et PD2
 #define F_CPU 8000000
 #include<avr/io.h>
 #include <util/delay.h>
@@ -69,7 +67,15 @@ void _delay_ms(double ms);
 bool bouton_presse();
 void led_off();
 void led_vert_two_sec();
-enum Etat {INIT,PREMIER_APPUI,PREMIER_RELACHE,SECOND_APPUI,SECOND_RELACHE,DERNIER_APPUI,DERNIER_RELACHE};
+enum Etat {
+    INIT,
+    PREMIER_APPUI,
+    PREMIER_RELACHE,
+    SECOND_APPUI,
+    SECOND_RELACHE,
+    DERNIER_APPUI,
+    DERNIER_RELACHE
+};
 Etat etat = INIT;
 int main(){
     DDRA |= (1 << PA0) | (1 << PA1);

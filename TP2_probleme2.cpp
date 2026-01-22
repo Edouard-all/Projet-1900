@@ -1,6 +1,6 @@
 /*Edouard Allaire
 *Abdeldjallil Moncef MESSAI
-*machines a etat pour allumer la led en pesant trois fois le bouton
+*machines a etat qui fait changer la couleur de la led chaque fois que le bouton et pousse ou relache
 *
 * ========== I/O IDENTIFICATION (CONNEXIONS SUR LE ROBOT) =============
 * 
@@ -58,8 +58,6 @@
 | DERNIER_RELACHE | 1   | INIT            | 1     | 0    | 0     |
 +-----------------+-----+-----------------+-------+------+-------+
 */
-//boutton: entre DPD2
-//led: sortie PD1 et PD2
 #define F_CPU 8000000
 #include<avr/io.h>
 #include <util/delay.h>
@@ -71,7 +69,14 @@ void led_off();
 void led_vert();
 void led_rouge();
 void led_ambre();
-enum Etat {INIT,PREMIER_APPUI,PREMIER_RELACHE,SECOND_APPUI,SECOND_RELACHE,DERNIER_APPUI,/*DERNIER_RELACHE*/};
+enum Etat {
+    INIT,
+    PREMIER_APPUI,
+    PREMIER_RELACHE,
+    SECOND_APPUI,
+    SECOND_RELACHE,
+    DERNIER_APPUI
+};
 Etat etat = INIT;
 int main(){
     DDRA |= (1 << PA0) | (1 << PA1);
@@ -115,10 +120,6 @@ int main(){
                 etat = INIT;
             }
             break;
-        /*case DERNIER_RELACHE:
-            led_rouge();
-            etat = INIT;
-            break;*/
         }
     }
 }
