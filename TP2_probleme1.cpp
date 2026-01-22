@@ -11,8 +11,8 @@
 * │                                                                   │
 * │   PORTA            PORTB           PORTC          PORTD           │
 * │  ┌───────┐        ┌───────┐        ┌──────┐       ┌──────┐        │   
-* │  │ PA0 ●─│→ledR   │PB0 ○  │        │PC0 ○ │       │PD0 ○ │        │
-* │  │ PA1 ●─│→ledG   │PB1 ○  │        │PC1 ○ │       │PD1 ○ │        │
+* │  │ PA0 ●─│→ledRout│PB0 ○  │        │PC0 ○ │       │PD0 ○ │        │
+* │  │ PA1 ●─│→ledGout│PB1 ○  │        │PC1 ○ │       │PD1 ○ │        │
 * │  │ PA2 ○ │        │PB2 ○  │        │PC2 ○ │       │PD2 ●─│→B-INT0 │
 * │  │ PA3 ○ │        │PB3 ○  │        │PC3 ○ │       │PD3 ○ │        │
 * │  │ PA4 ○ │        │PB4 ○  │        │PC4 ○ │       │PD4 ○ │        │
@@ -29,7 +29,7 @@
 +-----------------+-----+-----------------+-----+-----+
 | etas            | PD2 | prochain etat   | PA0 | PA1 |
 +-----------------+-----+-----------------+-----+-----+
-| INIT            | 0   | INT             | 0   | 0   |
+| INIT            | 0   | INIT            | 0   | 0   |
 +-----------------+-----+-----------------+-----+-----+
 | INIT            | 1   | PREMIER_APPUI   | 0   | 0   |
 +-----------------+-----+-----------------+-----+-----+
@@ -60,12 +60,16 @@
 */
 //boutton: entre DPD2
 //led: sortie PD1 et PD2
+#define F_CPU 8000000
 #include<avr/io.h>
 #include <util/delay.h>
-const double delay = 200;
+const double delay = 20;
+const double two_sec = 2000;
 void _delay_ms(double ms);
 bool bouton_presse();
-enum Etat (INIT,PREMIER_APPUI,PREMIER_RELACHE,SECOND_APPUI,SECOND_RELACHE,DERNIER_APPUI,DERNIER_RELACHE);
+void led_off();
+void led_vert_two_sec();
+enum Etat {INIT,PREMIER_APPUI,PREMIER_RELACHE,SECOND_APPUI,SECOND_RELACHE,DERNIER_APPUI,DERNIER_RELACHE};
 Etat etat = INIT;
 int main(){
     DDRA |= (1 << PA0) | (1 << PA1);
@@ -74,10 +78,44 @@ int main(){
         switch (etat)
         {
         case INIT:
-            
+            led_off();
+            if(bouton_presse()){
+                etat = PREMIER_APPUI;
+            }
             break;
-        
-        default:
+        case PREMIER_APPUI:
+            led_off();
+            if(!(bouton_presse())){
+                etat = PREMIER_RELACHE;
+            }
+            break;
+        case PREMIER_RELACHE:
+            led_off();
+            if(bouton_presse()){
+                etat = SECOND_APPUI;
+            }
+            break;
+        case SECOND_APPUI:
+            led_off();
+            if(!(bouton_presse())){
+                etat = SECOND_RELACHE;
+            }
+            break;
+        case SECOND_RELACHE:
+            led_off();
+            if(bouton_presse()){
+                etat = DERNIER_APPUI;
+            }
+            break;
+        case DERNIER_APPUI:
+            led_off();
+            if(!(bouton_presse())){
+                etat = DERNIER_RELACHE;
+            }
+            break;
+        case DERNIER_RELACHE:
+            led_vert_two_sec();
+            etat = INIT;
             break;
         }
     }
@@ -88,8 +126,20 @@ bool bouton_presse(){
         if (PIND & (1 << PD2)){
             return true;
         }
+        else {
+            return false;
+        }
 	}
 	else {
 		return false;
 	}
+}
+void led_off(){
+    PORTA &= ~(1 << PA0) & ~(1 << PA1);
+}
+void led_vert_two_sec(){
+    PORTA |= (1 << PA1);
+    PORTA &= ~(1 << PA0);
+    _delay_ms(two_sec);
+    led_off();
 }
