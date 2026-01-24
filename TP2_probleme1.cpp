@@ -62,7 +62,7 @@
 #include<avr/io.h>
 #include <util/delay.h>
 const double delay = 20;
-const double two_sec = 2000;
+const double twoSec = 2000;
 void _delay_ms(double ms);
 bool bouton_presse();
 void led_off();
@@ -146,6 +146,6 @@ void led_off(){
 void led_vert_two_sec(){
     PORTA |= (1 << PA1);
     PORTA &= ~(1 << PA0);
-    _delay_ms(two_sec);
+    _delay_ms(twoSec);
     led_off();
 }

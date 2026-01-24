@@ -1,7 +1,7 @@
 #define F_CPU 8000000
 #include <avr/io.h>
 #include <util/delay.h>
-const double delayDebounce = 200;
+const double delayDebounce = 20;
 const double delayRouge = 1;
 const double delayVert = 5;
 void _delay_ms(double ms);
@@ -44,6 +44,9 @@ bool bouton_presse(){
 		_delay_ms(delayDebounce);
         if (PIND & (1 << PD2)){
             return true;
+        }
+        else{
+            return false;
         }
 	}
 	else {
